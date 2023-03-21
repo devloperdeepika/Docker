@@ -1,0 +1,28 @@
+
+version: '3'
+services:
+  db:
+    image: postgres:14.2
+    restart: always
+    volumes:
+      - /etc/postgresql
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: docker_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    stdin_open: true
+    tty: true
+
+  app:
+    build: .
+    command: bundle exec rails s -p 3002 -b '0.0.0.0'
+    volumes:
+      - .:/appartment-gem
+    ports:
+      - "3002:3002"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/multitanent_appartment_implementation
